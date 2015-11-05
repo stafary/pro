@@ -1,0 +1,185 @@
+<html>
+<head>
+<title>Places</title>
+<style type="text/css">
+.left {
+float:left;
+margin-left:18px;
+}
+.right{
+float:right;
+margin-right:15px;
+}
+#top p{
+color:white;
+float:left;
+font-size:200%;
+
+margin:0px 0px 0px 190px;
+
+}
+#top {
+position:absolute;
+top:0;
+left:0;
+width:98%;
+height:40px;
+background-color:rgba(255,255,255,0.3);
+padding:10px 10px 5px 10px;
+}
+.button {
+        position: relative;
+        display: inline-block;
+        margin: 0;
+        padding: 8px 15px;
+        font-size: 13px;
+        font-weight: bold;
+        color: #333;
+        text-shadow: 0 1px 0 rgba(255,255,255,0.9);
+        white-space: nowrap;
+        background-color: #eaeaea;
+        background-image: -moz-linear-gradient(#fafafa, #eaeaea);
+        background-image: -webkit-linear-gradient(#fafafa, #eaeaea);
+        background-image: linear-gradient(#fafafa, #eaeaea);
+        background-repeat: repeat-x;
+        border-radius: 3px;
+        border: 1px solid #ddd;
+        border-bottom-color: #c5c5c5;
+        box-shadow: 0 1px 3px rgba(0,0,0,.05);
+        vertical-align: middle;
+        cursor: pointer;
+        -moz-box-sizing: border-box;
+        box-sizing: border-box;
+        -webkit-touch-callout: none;
+        -webkit-user-select: none;
+        -khtml-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+        -webkit-appearance: none;
+      }
+      .button:hover,
+      .button:active {
+        background-position: 0 -15px;
+        border-color: #ccc #ccc #b5b5b5;
+      }
+      .button:active {
+        background-color: #dadada;
+        border-color: #b5b5b5;
+        background-image: none;
+        box-shadow: inset 0 3px 5px rgba(0,0,0,.15);
+      }
+      .button:focus,
+      input[type=text]:focus,
+      input[type=password]:focus {
+        outline: none;
+        border-color: #51a7e8;
+        box-shadow: inset 0 1px 2px rgba(0,0,0,.075), 0 0 5px rgba(81,167,232,.5);
+      }
+     label[for=search] {
+        display: block;
+        text-align: left;
+      }
+      
+      #search label {
+        font-weight: 200;
+        padding: 5px 0;
+      }
+      #search input[type=text] {
+        font-size: 18px;
+        width: 220px;
+	height: 35px;
+      }
+      #search .button {
+        padding: 10px;
+        width: 90px;
+      }
+#pictures {
+background-color:rgba(255,255,255,0.3);
+position:absolute;
+top:70px;
+width:95%;
+height:80%;
+margin:0 20px
+}
+div.img
+  {
+  margin:20px;
+  border:1px solid white;
+  height:auto;
+  width:auto;
+  float:left;
+  text-align:center;
+  }
+div.img img
+  {
+  display:inline;
+  margin:3px;
+  border:1px solid white;
+  }
+div.img a:hover img
+  {
+  border:1px solid #333333;
+  }
+div.desc
+  {
+  text-align:center;
+  font-weight:normal;
+  width:150px;
+  font-size:30px;
+  margin:10px 5px 10px 5px;
+  }
+
+</style>
+</head>
+<body>
+<div id="Layer1" style="position:fixed; width:100%; height:100%; z-index:-1;left:0px;top:0px;">    
+	<img src="back.jpg" height="100%" width="100%"/>   
+</div> 
+ <div id="top">
+ <form id="search" action="" method="post">
+    <div class="left">
+    <input type="text" name="place" placeholder="输入拍摄地点(市)查询相册" >
+    <input class="button" type="submit" value="搜索">
+    </div>
+    <p>搜索照片</p>
+    <div class="right">
+    <input type="text" name="commen" placeholder="输入心情或评论查询照片">
+    <input class="button" type="submit" value="搜索">
+    </div>
+  </form>
+  </div>
+  <div id="pictures">
+  <h1 style="text-align:center;font-size:40px;color:white;">所有地点的相册</h1>
+   <div class="img">
+  <a target="_blank" href="">
+  <img src="1.jpg" alt="Ballade" width="160" height="160">
+  </a>
+  <div class="desc">哈尔滨</div>
+   </div>
+
+   <div class="img">
+   <a target="_blank" href="">
+   <img src="2.jpg" alt="Ballade" width="160" height="160">
+   </a>
+   <div class="desc">北京</div>
+    </div>
+
+   <div class="img">
+  <a target="_blank" href="">
+  <img src="3.jpg" alt="Ballade" width="160" height="160">
+  </a>
+  <div class="desc">上海</div>
+   </div>
+
+   <div class="img">
+  <a target="_blank" href="">
+  <img src="4.jpg" alt="Ballade" width="160" height="160">
+  </a>
+  <div class="desc">西安</div>
+  </div>
+
+
+  </div>
+</body>
+</html>
