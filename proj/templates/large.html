@@ -1,0 +1,83 @@
+<html>
+<head>
+<title>Large</title>
+<style type="text/css">
+
+.button  {
+	text-decoration:none;
+        position:absolute;
+        margin: 0;
+        padding: 8px 15px;
+        font-size: 20px;
+        font-weight: bold;
+        color: #333;
+        text-shadow: 0 1px 0 rgba(255,255,255,0.9);
+        white-space: nowrap;
+        background-color: #eaeaea;
+        background-image: -moz-linear-gradient(#fafafa, #eaeaea);
+        background-image: -webkit-linear-gradient(#fafafa, #eaeaea);
+        background-image: linear-gradient(#fafafa, #eaeaea);
+        background-repeat: repeat-x;
+        border-radius: 3px;
+        border: 1px solid #ddd;
+        border-bottom-color: #c5c5c5;
+        box-shadow: 0 1px 3px rgba(0,0,0,.05);
+        vertical-align: middle;
+        cursor: pointer;
+        -moz-box-sizing: border-box;
+        box-sizing: border-box;
+        -webkit-touch-callout: none;
+        -webkit-user-select: none;
+        -khtml-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+        -webkit-appearance: none;
+      }
+      .button:hover,
+      .button:active {
+        background-position: 0 -15px;
+        border-color: #ccc #ccc #b5b5b5;
+      }
+      .button:active {
+        background-color: #dadada;
+        border-color: #b5b5b5;
+        background-image: none;
+        box-shadow: inset 0 3px 5px rgba(0,0,0,.15);
+      }
+      .button:focus {
+        outline: none;
+        border-color: #51a7e8;
+        box-shadow: inset 0 1px 2px rgba(0,0,0,.075), 0 0 5px rgba(81,167,232,.5);
+      }
+#back {
+background-color:rgba(255,255,255,0.3);
+position:absolute;
+top:10px;
+width:95%;
+height:95%;
+margin:0 20px
+}
+#back img
+  {
+  float:left;
+  display:block;
+  margin-left:80px;
+  border:1px solid white;
+  width:720px;
+  }
+</style>
+</head>
+<body>
+<div id="Layer1" style="position:fixed; width:100%; height:100%; z-index:-1;left:0px;top:0px;">    
+	<img src="/static/back.jpg" height="100%" width="100%"/>   
+</div> 
+  <div id="back">
+   	<div >
+  		<img src="1.jpg" alt="Ballade">
+   		<a class="button" href="" style="right:10%;top:40%;">上一张</a>
+		<a class="button" href="" style="right:10%;bottom:40%;">下一张</a>
+  	</div>
+  </div>
+</body>
+</html>
