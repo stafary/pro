@@ -45,15 +45,11 @@ text-align:center;
 padding:4px;
 text-decoration:none;" >
 	我的照片</a></br>
-	<a href="" style="display:block;margin-top:40px;
-width:100%;font-size:40px;
-font-weight:bold;
-color:rgb(144,144,144) ;
-background-color:rgba(248,248,248,0.3);
-text-align:center;
-padding:4px;
-text-decoration:none;" >
-	上传照片</a>
+	<form action="" method="post" enctype="multipart/form-data">
+	{% csrf_token %}
+	<input id="id_image" type="file" class="" name="image"> 
+	<input type="submit" value="上传照片" /> 
+	</form> 
 	
 </div>
 <div class="pictures">

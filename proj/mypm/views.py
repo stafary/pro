@@ -3,6 +3,8 @@ render_to_response
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib import auth
 from django.contrib.auth.decorators import login_required
+from forms import ImageUploadForm
+from models import picture
 def login(request):
     if request.method == "POST":
         if request.POST.get("log"):
@@ -35,4 +37,10 @@ def register(request):
     return render_to_response("reg.html", {'form': form,})
 @login_required
 def home(request):
-    return render_to_response("home.html")
+	if request.method == 'POST':
+		form = ImageUploadForm( request.POST, request.FILES )
+		if form.is_valid():
+			m = picture(image = form.cleaned_data['image']) 
+			m.save()
+			return HttpResponse('image upload success')
+	return	render_to_response("home.html")
