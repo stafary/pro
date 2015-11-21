@@ -44,3 +44,6 @@ def home(request):
 			m.save()
 			return HttpResponse('image upload success')
 	return	render_to_response("home.html")
+
+def large(request):
+    return render_to_response("large.html")
