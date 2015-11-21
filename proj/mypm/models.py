@@ -6,3 +6,4 @@ class picture(models.Model):
     image = models.ImageField(upload_to = 'pic_folder/', default = 'pic_folder/None/no-img.jpg')
     place = models.CharField(max_length=100)
     comment = models.CharField(max_length=200)
+    name = models.CharField(max_length =100)

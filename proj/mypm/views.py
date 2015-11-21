@@ -8,6 +8,7 @@ from models import picture
 import urllib2,urllib,httplib
 import json
 from PIL import Image
+from PIL.ExifTags import TAGS
 def login(request):
     if request.method == "POST":
         if request.POST.get("log"):
@@ -40,14 +41,45 @@ def register(request):
     return render_to_response("reg.html", {'form': form,})
 @login_required
 def home(request):
-	if request.method == 'POST':
-		form = ImageUploadForm( request.POST, request.FILES )
-		if form.is_valid():
-                  m = picture(image = form.cleaned_data['image'])               
-                  m.save()                  
-                  return HttpResponse('image upload success')
-	return	render_to_response("home.html")
-#给出经纬度，调用百度地图获得照片的拍摄城市
+    if request.method == 'POST':
+             form = ImageUploadForm( request.POST, request.FILES )
+             n = request.FILES['image'].name
+             if form.is_valid():
+                  pic = form.cleaned_data['image']
+                  m = picture(image = pic,name = n,username=request.user.username)
+                  m.save()
+                  src = "pic_folder/" + n
+                  pic = Image.open(src)
+                  
+                  if hasattr(pic, '_getexif' ):
+                      ret = {}
+                      exifinfo = pic._getexif()
+                      flag = True
+                      for tag, value in exifinfo.items():
+                          decoded = TAGS.get(tag, tag)
+                          ret[decoded] = value
+                      try:
+                          xy = ret["GPSInfo"]
+                      except:
+                          flag = False
+                          m.place = "unkown"
+                      if(flag):
+                          
+                          lt = xy[4][0][0]*1.0/xy[4][0][1]+\
+                          xy[4][1][0]*1.0/xy[4][1][1]/60+xy[4][2][0]*1.0\
+                          /xy[4][2][1]/3600
+                          ln = xy[2][0][0]*1.0/xy[2][0][1]+\
+                          xy[2][1][0]*1.0/xy[2][1][1]/60+xy[2][2][0]*1.0\
+                          /xy[2][2][1]/3600
+                          bm = xBaiduMap()
+                          add = bm.getAddress(ln, lt)
+                          m.place = add
+                      m.save()
+                      return HttpResponse('%s%s'%(m.place,m.username))
+             return	render_to_response("home.html",{"form":form})
+    form = ImageUploadForm()
+    return	render_to_response("home.html",{"form":form})
+
 class xBaiduMap:
     def __init__(self,key='UWVFoZBvfQKRCRYPQUGcjDoC'):
         self.host='http://api.map.baidu.com'
