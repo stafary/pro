@@ -1,4 +1,4 @@
-<html>
+ï»¿<html>
 <head>
 <title>Places</title>
 <style type="text/css">
@@ -15,11 +15,12 @@ color:white;
 float:left;
 font-size:200%;
 
-margin:0px 0px 0px 190px;
+margin:0px 0px 0px 40px;
 
 }
 #top {
 position:absolute;
+z-index:99;
 top:0;
 left:0;
 width:98%;
@@ -95,18 +96,17 @@ padding:10px 10px 5px 10px;
         width: 90px;
       }
 #pictures {
-background-color:rgba(255,255,255,0.3);
 position:absolute;
 top:70px;
 width:95%;
-height:80%;
+height:100%;
 margin:0 20px
 }
 div.img
   {
   margin:20px;
   border:1px solid white;
-  height:auto;
+  height:250px;
   width:auto;
   float:left;
   text-align:center;
@@ -126,7 +126,7 @@ div.desc
   text-align:center;
   font-weight:normal;
   width:150px;
-  font-size:30px;
+  font-size:20px;
   margin:10px 5px 10px 5px;
   }
 
@@ -139,45 +139,29 @@ div.desc
  <div id="top">
  <form id="search" action="" method="post">
     <div class="left">
-    <input type="text" name="place" placeholder="ÊäÈëÅÄÉãµØµã(ÊĞ)²éÑ¯Ïà²á" >
-    <input class="button" type="submit" value="ËÑË÷">
+    <input type="text" name="place" placeholder="è¾“å…¥æ‹æ‘„åœ°ç‚¹æŸ¥è¯¢ç›¸å†Œ" >
+    <input class="button" type="submit"  value="æœç´¢">
     </div>
-    <p>ËÑË÷ÕÕÆ¬</p>
+    <a style="float:left;font-size:20px;margin:10px;color:white;" href="/home/">è¿”å›ä¸»é¡µ</a>
+    <p>æœç´¢ç…§ç‰‡</p>
     <div class="right">
-    <input type="text" name="commen" placeholder="ÊäÈëĞÄÇé»òÆÀÂÛ²éÑ¯ÕÕÆ¬">
-    <input class="button" type="submit" value="ËÑË÷">
+    <input type="text" name="commen" placeholder="è¾“å…¥å¿ƒæƒ…æˆ–è¯„è®ºæŸ¥è¯¢ç…§ç‰‡">
+    <input class="button" type="submit"  value="æœç´¢">
     </div>
   </form>
   </div>
+
   <div id="pictures">
-  <h1 style="text-align:center;font-size:40px;color:white;">ËùÓĞµØµãµÄÏà²á</h1>
+  <h1 style="text-align:center;font-size:40px;color:white;">æ‰€æœ‰åœ°ç‚¹çš„ç›¸å†Œ</h1>
+      {%  for loca in locas %}
    <div class="img">
-  <a target="_blank" href="">
-  <img src="1.jpg" alt="Ballade" width="160" height="160">
+   <a href="/all_of_one/?place={{loca.place}}">
+  <img src="/pic_folder/{{loca.pic}}" width="160" height="160">
   </a>
-  <div class="desc">¹ş¶û±õ</div>
+  <div class="desc">{{ loca.place }}</div>
    </div>
+    {% endfor %}
 
-   <div class="img">
-   <a target="_blank" href="">
-   <img src="2.jpg" alt="Ballade" width="160" height="160">
-   </a>
-   <div class="desc">±±¾©</div>
-    </div>
-
-   <div class="img">
-  <a target="_blank" href="">
-  <img src="3.jpg" alt="Ballade" width="160" height="160">
-  </a>
-  <div class="desc">ÉÏº£</div>
-   </div>
-
-   <div class="img">
-  <a target="_blank" href="">
-  <img src="4.jpg" alt="Ballade" width="160" height="160">
-  </a>
-  <div class="desc">Î÷°²</div>
-  </div>
 
 
   </div>

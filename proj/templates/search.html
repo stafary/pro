@@ -1,28 +1,16 @@
 ﻿<html>
 <head>
-<title>All pictures in one place</title>
+<title>Places</title>
 <style type="text/css">
-textarea{
-float:left;
-}
 .left {
 float:left;
 margin-left:18px;
 }
 .right{
-position:absolute;
-right:10px;
-top:5px;
+float:right;
 margin-right:15px;
 }
-#top p{
-color:white;
-float:left;
-font-size:200%;
 
-margin:0px 0px 0px 30px;
-
-}
 #top {
 position:absolute;
 top:0;
@@ -32,7 +20,7 @@ height:40px;
 background-color:rgba(255,255,255,0.3);
 padding:10px 10px 5px 10px;
 }
-.button  {
+.button {
         position: relative;
         display: inline-block;
         margin: 0;
@@ -99,12 +87,14 @@ padding:10px 10px 5px 10px;
         padding: 10px;
         width: 90px;
       }
+
 #pictures {
 position:absolute;
 top:70px;
 width:95%;
 height:100%;
-margin:0 20px
+margin:20px；
+bottom:0px;
 }
 div.img
   {
@@ -125,45 +115,40 @@ div.img a:hover img
   {
   border:1px solid #333333;
   }
+div.desc
+  {
+  text-align:center;
+  font-weight:normal;
+  width:150px;
+  font-size:20px;
+  margin:10px 5px 10px 5px;
+  }
+
 </style>
 </head>
 <body>
 <div id="Layer1" style="position:fixed; width:100%; height:100%; z-index:-1;left:0px;top:0px;">    
 	<img src="/static/back.jpg" height="100%" width="100%"/>   
 </div> 
- <div id="top">
- <form id="search" action="" method="post">
-    <div class="left">
-    <input type="text" name="place" placeholder="输入拍摄地点查询相册" >
-    <input class="button" type="submit" value="搜索">
-    </div>
-    <a style="float:left;font-size:20px;margin:10px;color:white;" href="/mypic/">返回查看相册</a>
-    <p>搜索照片</p>
-    <a style="float:left;font-size:20px;margin:10px;color:white;" href="/home/">返回主页</a>
-    <div class="right">
-    <input type="text" name="commen" placeholder="输入心情或评论查询照片">
-    <input class="button" type="submit" value="搜索">
-    </div>
-  </form>
-  <div id="pictures">
-  <h1 style="text-align:center;font-size:40px;color:white;">{{place}}的所有照片</h1>
-   
-  {% for pic in pictures%}
-   <div class="img">
-  <a target="_blank" href="/large?name={{pic.name}}">
-  <img src="/pic_folder/{{pic.name}}" alt="Ballade" width="160" height="160">
-  </a>
-  <div class="desc">
-   <form action="" method="post">
-	<textarea rows="3" cols="10" name="changed_comment" >{{pic.comment}}</textarea>
-	<div>
-	<input type="submit" name={{pic.name}}  value="确认修改">
-	<input type="submit" name={{pic.name}}  value="删除照片">
-	</div>
-   </form>
-   </div>
-   </div>
-  {% endfor %}
+ <div id = "top">
+	<h1 style="text-align:center; font-size:25px; color:white;"><a href="/mypic" color="white">返回</a></h1>
   </div>
+  <div id="pictures">
+  <h1 style="text-align:center;font-size:40px;color:white;">搜索到的相册</h1>
+      {%  for loca in locas %}
+   <div class="img">
+   <a href="/all_of_one/?place={{loca.place}}">
+  <img src="/pic_folder/{{loca.pic}}" width="160" height="160">
+  </a>
+  <div class="desc">{{ loca.place }}</div>
+   </div>
+    {% endfor %}
+
+
+
+  </div>
+  
+	
 </body>
+
 </html>

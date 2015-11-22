@@ -1,4 +1,4 @@
-#coding=utf-8
+﻿#coding=utf-8
 from django.shortcuts import render,HttpResponseRedirect,HttpResponse,\
 render_to_response
 from django.contrib.auth.forms import UserCreationForm
@@ -10,6 +10,7 @@ import urllib2,urllib,httplib
 import json
 from PIL import Image
 from PIL.ExifTags import TAGS
+from django.template import Context
 def login(request):
     if request.method == "POST":
         if request.POST.get("log"):
@@ -98,7 +99,6 @@ def all_of_one(request):
     if not request.user.is_authenticated():
         return HttpResponseRedirect("/accounts/login/")
     place = request.GET.get("place")
-    place = u"黑龙江省哈尔滨市南岗区松明街副28号"
     pictures = picture.objects.filter(place=place,username=request.user.username)
     if request.method =="POST":
         for pic in pictures:
@@ -108,8 +108,9 @@ def all_of_one(request):
                     pic.save()
                 else:
                     pic.image.delete()
-                    picture.objects.get(name= pic.name).delete()
-    pictures = picture.objects.filter(place=place,username=request.user.username)
+                    picture.objects.filter(name= pic.name)[0].delete()
+        pictures = picture.objects.filter(place=place,username=request.user.username)
+#        return HttpResponseRedirect("/all_of_one/?place=%s"%place)
     return render_to_response("all_of_one.html",{"pictures":pictures,"place":place})
     
     
@@ -161,3 +162,36 @@ class xBaiduMap:
             print "Decoding Failed"
             return None
 
+def show_pic(request):
+    if request.POST:
+        if request.POST["place"]=="":
+            commen=request.POST["comment"]
+            pics=picture.objects.filter(username=request.user.username, commen__contains=commen)
+            loca=[]
+            loca2=[]
+            for i in pics:
+                if i.place not in loca2:
+                    loca2.append(i.place)
+                    loca.append({"pic":i.name, "place":i.place})
+            return render_to_response("search.html",{"locas":loca})
+        else:
+            place=request.POST["place"]
+            pics=picture.objects.filter(username=request.user.username, place__contains=place)
+            loca=[]
+            loca2=[]
+            for i in pics:
+                if i.place not in loca2:
+                    loca2.append(i.place)
+                    loca.append({"pic":i.name, "place":i.place})
+            return render_to_response("search.html",{"locas":loca})
+    else:
+        pics = picture.objects.filter(username=request.user.username)
+        loca=[]
+        loca2=[]
+        for i in pics:
+            if i.place not in loca2:
+                loca2.append(i.place)
+                loca.append({"pic":i.name, "place":i.place})
+        c=Context({"locas": loca})
+        print c
+        return render_to_response("places.html", c)
