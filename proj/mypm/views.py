@@ -40,9 +40,9 @@ def register(request):
     else:
         form = UserCreationForm()
     return render_to_response("reg.html", {'form': form,})
-@login_required
 def home(request):
-<<<<<<< HEAD
+    if not request.user.is_authenticated():
+        return HttpResponseRedirect("/accounts/login/")
     if request.method == 'POST':
              form = ImageUploadForm( request.POST, request.FILES )
              n = request.FILES['image'].name
@@ -86,6 +86,8 @@ def home(request):
     return	render_to_response("home.html",{"form":form})
 
 def up_success(request):
+    if not request.user.is_authenticated():
+        return HttpResponseRedirect("/accounts/login/")
     flag = request.GET.get("flag")
     if(flag == "True"):
         flag = True
@@ -93,6 +95,8 @@ def up_success(request):
         flag = False
     return render_to_response("up_success.html",{"flag":flag})
 def all_of_one(request):
+    if not request.user.is_authenticated():
+        return HttpResponseRedirect("/accounts/login/")
     place = request.GET.get("place")
     place = u"黑龙江省哈尔滨市南岗区松明街副28号"
     pictures = picture.objects.filter(place=place,username=request.user.username)
@@ -109,14 +113,6 @@ def all_of_one(request):
     return render_to_response("all_of_one.html",{"pictures":pictures,"place":place})
     
     
-=======
-	if request.method == 'POST':
-		form = ImageUploadForm( request.POST, request.FILES )
-		if form.is_valid():
-                  m = picture(image = form.cleaned_data['image'])               
-                  m.save()                  
-                  return HttpResponse('image upload success')
-	return	render_to_response("home.html")
 
 #给出经纬度，调用百度地图获得照片的拍摄城市
 class xBaiduMap:
