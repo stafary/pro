@@ -1,4 +1,4 @@
-<html>
+ï»¿<html>
 <head>
 <title>All pictures in one place</title>
 <style type="text/css">
@@ -102,7 +102,7 @@ background-color:rgba(255,255,255,0.3);
 position:absolute;
 top:70px;
 width:95%;
-height:80%;
+height:100%;
 margin:0 20px
 }
 div.img
@@ -133,78 +133,34 @@ div.img a:hover img
  <div id="top">
  <form id="search" action="" method="post">
     <div class="left">
-    <input type="text" name="place" placeholder="ÊäÈëÅÄÉãµØµã(ÊĞ)²éÑ¯Ïà²á" >
-    <input class="button" type="submit" value="ËÑË÷">
+    <input type="text" name="place" placeholder="è¾“å…¥æ‹æ‘„åœ°ç‚¹(å¸‚)æŸ¥è¯¢ç›¸å†Œ" >
+    <input class="button" type="submit" value="æœç´¢">
     </div>
-    <p>ËÑË÷ÕÕÆ¬</p>
+    <p>æœç´¢ç…§ç‰‡</p>
     <div class="right">
-    <input type="text" name="commen" placeholder="ÊäÈëĞÄÇé»òÆÀÂÛ²éÑ¯ÕÕÆ¬">
-    <input class="button" type="submit" value="ËÑË÷">
+    <input type="text" name="commen" placeholder="è¾“å…¥å¿ƒæƒ…æˆ–è¯„è®ºæŸ¥è¯¢ç…§ç‰‡">
+    <input class="button" type="submit" value="æœç´¢">
     </div>
   </form>
   </div>
   <div id="pictures">
-  <h1 style="text-align:center;font-size:40px;color:white;">¹ş¶û±õµÄËùÓĞÕÕÆ¬</h1>
+  <h1 style="text-align:center;font-size:40px;color:white;">{{place}}çš„æ‰€æœ‰ç…§ç‰‡</h1>
+  {% for pic in pictures%}
    <div class="img">
-  <a target="_blank" href="">
-  <img src="1.jpg" alt="Ballade" width="160" height="160">
+  <a target="_blank" href="/large?name={{pic.name}}">
+  <img src="/pic_folder/{{pic.name}}" alt="Ballade" width="160" height="160">
   </a>
   <div class="desc">
    <form action="" method="post">
-	<textarea rows="3" cols="10" name="changed_comment">¿ªĞÄ</textarea>
+	<textarea rows="3" cols="10" name="changed_comment" >{{pic.comment}}</textarea>
 	<div>
-	<input type="submit" name="change"  value="È·ÈÏĞŞ¸Ä">
-	<input type="submit" name="delete"  value="É¾³ıÕÕÆ¬">
+	<input type="submit" name={{pic.name}}  value="ç¡®è®¤ä¿®æ”¹">
+	<input type="submit" name={{pic.name}}  value="åˆ é™¤ç…§ç‰‡">
 	</div>
    </form>
    </div>
    </div>
-
-   <div class="img">
-   <a target="_blank" href="">
-   <img src="2.jpg" alt="Ballade" width="160" height="160">
-   </a>
-   <div class="desc">
-   <form action="" method="post">
-	<textarea rows="3" cols="10" name="changed_comment">¿ªĞÄ</textarea>
-	<div>
-	<input type="submit" name="change"  value="È·ÈÏĞŞ¸Ä">
-	<input type="submit" name="delete"  value="É¾³ıÕÕÆ¬">
-	</div>
-   </form>
-   </div>
-    </div>
-
-   <div class="img">
-  <a target="_blank" href="">
-  <img src="3.jpg" alt="Ballade" width="160" height="160">
-  </a>
-  <div class="desc">
-   <form action="" method="post">
-	<textarea rows="3" cols="10" name="changed_comment">¿ªĞÄ</textarea>
-	<div>
-	<input type="submit" name="change"  value="È·ÈÏĞŞ¸Ä">
-	<input type="submit" name="delete"  value="É¾³ıÕÕÆ¬">
-	</div>
-   </form>
-   </div>
-   </div>
-   <div class="img">
-  <a target="_blank" href="">
-  <img src="4.jpg" alt="Ballade" width="160" height="160">
-  </a>
-  <div class="desc">
-   <form action="" method="post">
-	<textarea rows="3" cols="10" name="changed_comment">¿ªĞÄ</textarea>
-	<div>
-	<input type="submit" name="change"  value="È·ÈÏĞŞ¸Ä">
-	<input type="submit" name="delete"  value="É¾³ıÕÕÆ¬">
-	</div>
-   </form>
-   </div>
-  </div>
-
-
+  {% endfor %}
   </div>
 </body>
 </html>

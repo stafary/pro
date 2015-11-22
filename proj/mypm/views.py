@@ -1,3 +1,4 @@
+#coding=utf-8
 from django.shortcuts import render,HttpResponseRedirect,HttpResponse,\
 render_to_response
 from django.contrib.auth.forms import UserCreationForm
@@ -62,24 +63,51 @@ def home(request):
                           xy = ret["GPSInfo"]
                       except:
                           flag = False
-                          m.place = "unkown"
+                          m.place = u"外星"
                       if(flag):
-                          
-                          lt = xy[4][0][0]*1.0/xy[4][0][1]+\
-                          xy[4][1][0]*1.0/xy[4][1][1]/60+xy[4][2][0]*1.0\
-                          /xy[4][2][1]/3600
-                          ln = xy[2][0][0]*1.0/xy[2][0][1]+\
-                          xy[2][1][0]*1.0/xy[2][1][1]/60+xy[2][2][0]*1.0\
-                          /xy[2][2][1]/3600
-                          bm = xBaiduMap()
-                          add = bm.getAddress(ln, lt)
-                          m.place = add
+                          try:
+                              lt = xy[4][0][0]*1.0/xy[4][0][1]+\
+                              xy[4][1][0]*1.0/xy[4][1][1]/60+xy[4][2][0]*1.0\
+                              /xy[4][2][1]/3600
+                              ln = xy[2][0][0]*1.0/xy[2][0][1]+\
+                              xy[2][1][0]*1.0/xy[2][1][1]/60+xy[2][2][0]*1.0\
+                              /xy[2][2][1]/3600
+                          except:
+                              flag =False
+                          if(flag):
+                              bm = xBaiduMap()
+                              add = bm.getAddress(ln, lt)
+                              m.place = add
                       m.save()
-                      return HttpResponse('%s%s'%(m.place,m.username))
+                  return HttpResponseRedirect("/up_success?flag=%s"%flag)    
              return	render_to_response("home.html",{"form":form})
     form = ImageUploadForm()
     return	render_to_response("home.html",{"form":form})
 
+def up_success(request):
+    flag = request.GET.get("flag")
+    if(flag == "True"):
+        flag = True
+    else:
+        flag = False
+    return render_to_response("up_success.html",{"flag":flag})
+def all_of_one(request):
+    place = request.GET.get("place")
+    place = u"黑龙江省哈尔滨市南岗区松明街副28号"
+    pictures = picture.objects.filter(place=place,username=request.user.username)
+    if request.method =="POST":
+        for pic in pictures:
+            if(request.POST.has_key(str(pic.name))):
+                if(request.POST[pic.name]==u"确认修改"):
+                    pic.comment = request.POST["changed_comment"]
+                    pic.save()
+                else:
+                    pic.image.delete()
+                    picture.objects.get(name= pic.name).delete()
+    pictures = picture.objects.filter(place=place,username=request.user.username)
+    return render_to_response("all_of_one.html",{"pictures":pictures,"place":place})
+    
+    
 class xBaiduMap:
     def __init__(self,key='UWVFoZBvfQKRCRYPQUGcjDoC'):
         self.host='http://api.map.baidu.com'

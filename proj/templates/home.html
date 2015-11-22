@@ -45,15 +45,22 @@ text-align:center;
 padding:4px;
 text-decoration:none;" >
 	我的照片</a></br>
-	<form action="" method="post" enctype="multipart/form-data">
+	<form style="display:block;
+width:100%;font-size:40px;
+font-weight:bold;
+color:rgb(144,144,144) ;
+background-color:rgba(248,248,248,0.3);
+text-align:center;
+padding:4px;
+text-decoration:none;" action="" method="post" enctype="multipart/form-data">
 	{% csrf_token %}
 	{% if form.errors %}
 	<p style="color: red;">
-			Please correct the error{{ form.errors|pluralize }} below.
+			无效操作：{{ form.errors|pluralize }}
 	</p>
 	{% endif %}
 	{{ form.as_table }}
-	<input type="submit" value="上传照片" /> 
+	<input style="position:relative;margin-left:-80px" type="submit" value="确认上传" /> 
 	</form> 
 	
 </div>

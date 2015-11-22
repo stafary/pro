@@ -1,6 +1,6 @@
 from django.conf.urls import patterns, include, url
 from django.contrib import admin
-from mypm.views import login,empty,register,home
+from mypm.views import login,empty,register,home,up_success,all_of_one
 import settings
 urlpatterns = patterns('',
     # Examples:
@@ -14,4 +14,9 @@ urlpatterns = patterns('',
     url(r'^home/$',home),
     url( r'^static/(?P<path>.*)$', 'django.views.static.serve',
         { 'document_root':settings.STATIC_URL }),
+    url( r'^pic_folder/(?P<path>.*)$', 'django.views.static.serve',
+        { 'document_root':settings.STATIC_URL2 }),
+    url(r'^up_success/$',up_success),
+    url(r'^all_of_one/$',all_of_one),
+    
 )
