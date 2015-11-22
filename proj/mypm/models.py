@@ -7,3 +7,6 @@ class picture(models.Model):
     place = models.CharField(max_length=100)
     comment = models.CharField(max_length=200)
     name = models.CharField(max_length =100)
+
+    def __unicode__(self):
+        return (u"%s %s %s %s" %(self.username,self.place,self.comment,self.name)).decode("utf-8")

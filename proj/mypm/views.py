@@ -1,4 +1,4 @@
-#coding=utf-8
+#coding:utf-8
 from django.shortcuts import render,HttpResponseRedirect,HttpResponse,\
 render_to_response
 from django.contrib.auth.forms import UserCreationForm
@@ -10,6 +10,8 @@ import urllib2,urllib,httplib
 import json
 from PIL import Image
 from PIL.ExifTags import TAGS
+from django.template import Context
+
 def login(request):
     if request.method == "POST":
         if request.POST.get("log"):
@@ -42,8 +44,7 @@ def register(request):
     return render_to_response("reg.html", {'form': form,})
 @login_required
 def home(request):
-<<<<<<< HEAD
-    if request.method == 'POST':
+	if request.method == 'POST':
              form = ImageUploadForm( request.POST, request.FILES )
              n = request.FILES['image'].name
              if form.is_valid():
@@ -64,61 +65,22 @@ def home(request):
                           xy = ret["GPSInfo"]
                       except:
                           flag = False
-                          m.place = u"外星"
+                          m.place = "unkown"
                       if(flag):
-                          try:
-                              lt = xy[4][0][0]*1.0/xy[4][0][1]+\
-                              xy[4][1][0]*1.0/xy[4][1][1]/60+xy[4][2][0]*1.0\
-                              /xy[4][2][1]/3600
-                              ln = xy[2][0][0]*1.0/xy[2][0][1]+\
-                              xy[2][1][0]*1.0/xy[2][1][1]/60+xy[2][2][0]*1.0\
-                              /xy[2][2][1]/3600
-                          except:
-                              flag =False
-                          if(flag):
-                              bm = xBaiduMap()
-                              add = bm.getAddress(ln, lt)
-                              m.place = add
+                          
+                          lt = xy[4][0][0]*1.0/xy[4][0][1]+\
+                          xy[4][1][0]*1.0/xy[4][1][1]/60+xy[4][2][0]*1.0\
+                          /xy[4][2][1]/3600
+                          ln = xy[2][0][0]*1.0/xy[2][0][1]+\
+                          xy[2][1][0]*1.0/xy[2][1][1]/60+xy[2][2][0]*1.0\
+                          /xy[2][2][1]/3600
+                          bm = xBaiduMap()
+                          add = bm.getAddress(ln, lt)
+                          m.place = add
                       m.save()
-                  return HttpResponseRedirect("/up_success?flag=%s"%flag)    
-             return	render_to_response("home.html",{"form":form})
-    form = ImageUploadForm()
-    return	render_to_response("home.html",{"form":form})
-
-def up_success(request):
-    flag = request.GET.get("flag")
-    if(flag == "True"):
-        flag = True
-    else:
-        flag = False
-    return render_to_response("up_success.html",{"flag":flag})
-def all_of_one(request):
-    place = request.GET.get("place")
-    place = u"黑龙江省哈尔滨市南岗区松明街副28号"
-    pictures = picture.objects.filter(place=place,username=request.user.username)
-    if request.method =="POST":
-        for pic in pictures:
-            if(request.POST.has_key(str(pic.name))):
-                if(request.POST[pic.name]==u"确认修改"):
-                    pic.comment = request.POST["changed_comment"]
-                    pic.save()
-                else:
-                    pic.image.delete()
-                    picture.objects.get(name= pic.name).delete()
-    pictures = picture.objects.filter(place=place,username=request.user.username)
-    return render_to_response("all_of_one.html",{"pictures":pictures,"place":place})
-    
-    
-=======
-	if request.method == 'POST':
-		form = ImageUploadForm( request.POST, request.FILES )
-		if form.is_valid():
-                  m = picture(image = form.cleaned_data['image'])               
-                  m.save()                  
-                  return HttpResponse('image upload success')
+                      return HttpResponse('%s%s'%(m.place,m.username))
 	return	render_to_response("home.html")
 
-#给出经纬度，调用百度地图获得照片的拍摄城市
 class xBaiduMap:
     def __init__(self,key='UWVFoZBvfQKRCRYPQUGcjDoC'):
         self.host='http://api.map.baidu.com'
@@ -164,4 +126,33 @@ class xBaiduMap:
         else:
             print "Decoding Failed"
             return None
+def show_pic(request):
+    if request.POST:
+        if request.POST["place"]=="":
+            commen=request.POST["commen"]
+            pics=picture.objects.filter(username=request.user.username, commen__contains=commen)
+            loca=[]
+            for i in pics:
+                loca.append({"pic":i.name, "place":i.place})
+            return render_to_response("search.html",{"locas":loca})
+        else:
+            place=request.POST["place"]
+            pics=picture.objects.filter(username=request.user.username, place__contains=place)
+            loca=[]
+            for i in pics:
+                loca.append({"pic":i.name, "place":i.place})
+            return render_to_response("search.html",{"locas":loca})
+    else:
+        pics = picture.objects.filter(username=request.user.username)
+        print pics
+        loca=[]
+        loca2=[]
+        for i in pics:
+            if i.place not in loca2:
+                loca2.append(i.place)
+                loca.append({"pic":i.name, "place":i.place})
+        c=Context({"locas": loca})
+        print c
+        return render_to_response("places.html", c)
+
 
