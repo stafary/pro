@@ -1,0 +1,38 @@
+﻿<html>
+<head>
+<style type="text/css">
+input[type="submit"]，input[type="file"]{
+	background:  3366CC  url(overlay.png) repeat-x;
+	display: inline-block;
+	padding: 5px 10px 6px;
+	color: #fff;
+	text-decoration: none;
+	-moz-border-radius: 6px;
+	-webkit-border-radius: 6px;
+	-moz-box-shadow: 0 1px 3px rgba(0,0,0,0.6);
+	-webkit-box-shadow: 0 1px 3px rgba(0,0,0,0.6);
+	text-shadow: 0 -1px 1px rgba(0,0,0,0.25);
+	border-bottom: 1px solid rgba(0,0,0,0.25);
+	position: relative;
+	cursor: pointer
+}
+
+</style>
+</head>
+<body>
+<div id="Layer1" style="position:absolute; width:100%; height:100%; z-index:-1;left:0px;top:0px;">    
+	<img src="/static/back.jpg" height="100%" width="100%"/>   
+</div> 
+<div style="margin:auto;position:relative;top:40%;left:auto;background-color:rgba(255,255,255,0.3);padding:20px;">
+	<div style="position:relative;left:40%">
+	{% if flag %}
+		<p style="color:orange;font-weight:900;">上传成功！</p>
+	{% else %}
+		<p style="color:orange;font-weight:900;">上传成功(无法获取照片地理位置信息)！</p>
+	{% endif %}
+	<a href="/home">返回主页</a>
+	<a href="/mypic">查看我的相册</a>
+	</div>
+</div>
+</body>
+</html>
