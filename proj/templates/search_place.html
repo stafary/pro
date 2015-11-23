@@ -131,10 +131,11 @@ div.desc
 	<img src="/static/back.jpg" height="100%" width="100%"/>   
 </div> 
  <div id = "top">
-	<h1 style="text-align:center; font-size:25px; color:white;"><a href="/mypic" color="white">返回</a></h1>
+	<a style="float:left;font-size:20px;margin:10px;color:white;" href="/mypic/">返回查看相册</a>
+    <a style="float:left;font-size:20px;margin:10px;color:white;" href="/home/">返回主页</a>
   </div>
   <div id="pictures">
-  <h1 style="text-align:center;font-size:40px;color:white;">搜索到的相册</h1>
+  <h1 style="text-align:center;font-size:40px;color:white;">地点包含“{{place}}”的相册</h1>
       {%  for loca in locas %}
    <div class="img">
    <a href="/all_of_one/?place={{loca.place}}">

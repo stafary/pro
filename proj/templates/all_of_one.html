@@ -132,9 +132,9 @@ div.img a:hover img
 	<img src="/static/back.jpg" height="100%" width="100%"/>   
 </div> 
  <div id="top">
- <form id="search" action="" method="post">
+ <form id="search" action="" method="get">
     <div class="left">
-    <input type="text" name="place" placeholder="输入拍摄地点查询相册" >
+    <input type="text" name="place2" placeholder="输入拍摄地点查询相册" >
     <input class="button" type="submit" value="搜索">
     </div>
     <a style="float:left;font-size:20px;margin:10px;color:white;" href="/mypic/">返回查看相册</a>
@@ -150,15 +150,15 @@ div.img a:hover img
    
   {% for pic in pictures%}
    <div class="img">
-  <a target="_blank" href="/large?name={{pic.name}}">
-  <img src="/pic_folder/{{pic.name}}" alt="Ballade" width="160" height="160">
+  <a target="_blank" href="/large?id={{pic.id}}">
+  <img src="/{{pic.image}}" alt="Ballade" width="160" height="160">
   </a>
   <div class="desc">
    <form action="" method="post">
 	<textarea rows="3" cols="10" name="changed_comment" >{{pic.comment}}</textarea>
 	<div>
-	<input type="submit" name={{pic.name}}  value="确认修改">
-	<input type="submit" name={{pic.name}}  value="删除照片">
+	<input type="submit" name={{pic.id}}  value="确认修改">
+	<input type="submit" name={{pic.id}}  value="删除照片">
 	</div>
    </form>
    </div>

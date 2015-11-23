@@ -1,4 +1,4 @@
-﻿#coding=utf-8
+#coding=utf-8
 from django.shortcuts import render,HttpResponseRedirect,HttpResponse,\
 render_to_response
 from django.contrib.auth.forms import UserCreationForm
@@ -53,7 +53,7 @@ def home(request):
                   m.save()
                   src = "pic_folder/" + n
                   pic = Image.open(src)
-                  
+                  m.place = u"外星"
                   if hasattr(pic, '_getexif' ):
                       ret = {}
                       exifinfo = pic._getexif()
@@ -65,7 +65,7 @@ def home(request):
                           xy = ret["GPSInfo"]
                       except:
                           flag = False
-                          m.place = u"外星"
+                          
                       if(flag):
                           try:
                               lt = xy[4][0][0]*1.0/xy[4][0][1]+\
@@ -79,7 +79,16 @@ def home(request):
                           if(flag):
                               bm = xBaiduMap()
                               add = bm.getAddress(ln, lt)
-                              m.place = add
+                              start = False
+                              add2=""
+                              for char in add:
+                                  if(char==u"市"):
+                                      break
+                                  if(start):
+                                      add2+=char
+                                  if(char == u"省"):
+                                      start = True
+                              m.place = add2
                       m.save()
                   return HttpResponseRedirect("/up_success?flag=%s"%flag)    
              return	render_to_response("home.html",{"form":form})
@@ -98,22 +107,71 @@ def up_success(request):
 def all_of_one(request):
     if not request.user.is_authenticated():
         return HttpResponseRedirect("/accounts/login/")
+    if(request.GET.has_key("place2")):
+        return HttpResponseRedirect("/search_place/?place=%s"%request.GET.get("place2"))
+    if(request.GET.has_key("comment")):
+        return HttpResponseRedirect("/search_com/?comment=%s"%request.GET.get("comment"))
     place = request.GET.get("place")
     pictures = picture.objects.filter(place=place,username=request.user.username)
     if request.method =="POST":
-        for pic in pictures:
-            if(request.POST.has_key(str(pic.name))):
-                if(request.POST[pic.name]==u"确认修改"):
-                    pic.comment = request.POST["changed_comment"]
-                    pic.save()
-                else:
-                    pic.image.delete()
-                    picture.objects.filter(name= pic.name)[0].delete()
-        pictures = picture.objects.filter(place=place,username=request.user.username)
-#        return HttpResponseRedirect("/all_of_one/?place=%s"%place)
+            for pic in pictures:
+                if(request.POST.has_key(str(pic.id))):
+                    if(request.POST[str(pic.id)]==u"确认修改"):
+                        pic.comment = request.POST["changed_comment"]
+                        pic.save()
+                    else:
+                        pic.image.delete()
+                        picture.objects.get(id= pic.id).delete()
+            pictures = picture.objects.filter(place=place,username=request.user.username)
+
     return render_to_response("all_of_one.html",{"pictures":pictures,"place":place})
-    
-    
+
+def search_comment(request):
+    comment = request.GET.get("comment")
+    pictures = picture.objects.filter(username=request.user.username,comment__contains=comment)
+    if request.method =="POST":
+            for pic in pictures:
+                if(request.POST.has_key(str(pic.id))):
+                    if(request.POST[str(pic.id)]==u"确认修改"):
+                        pic.comment = request.POST["changed_comment"]
+                        pic.save()
+                    else:
+                        pic.image.delete()
+                        picture.objects.get(id= pic.id).delete()
+            pictures = picture.objects.filter(username=request.user.username,comment__contains=comment)
+    return render_to_response("search_com.html",{"pictures":pictures,"comment":comment})
+def search_place(request):
+    place=request.GET.get("place")
+    pics=picture.objects.filter(username=request.user.username, place__contains=place)            
+    loca=[]
+    loca2=[]
+    for i in pics:
+        if i.place not in loca2:
+            loca2.append(i.place)
+            loca.append({"pic":i.name, "place":i.place})
+    return render_to_response("search_place.html",{"locas":loca,"place":place})
+def show_pic(request):
+    if not request.user.is_authenticated():
+        return HttpResponseRedirect("/accounts/login/")
+
+    if request.POST:
+        if request.POST["place"]=="":
+            commen=request.POST["commen"]
+            return HttpResponseRedirect("/search_com/?comment=%s"%commen)
+        else:
+            return HttpResponseRedirect("/search_place/?place=%s"%request.POST["place"])
+
+    else:
+        pics = picture.objects.filter(username=request.user.username)
+        loca=[]
+        loca2=[]
+        for i in pics:
+            if i.place not in loca2:
+                loca2.append(i.place)
+                loca.append({"pic":i.name, "place":i.place})
+        c=Context({"locas": loca})
+        print c
+        return render_to_response("places.html", c)
 
 #给出经纬度，调用百度地图获得照片的拍摄城市
 class xBaiduMap:
@@ -161,37 +219,3 @@ class xBaiduMap:
         else:
             print "Decoding Failed"
             return None
-
-def show_pic(request):
-    if request.POST:
-        if request.POST["place"]=="":
-            commen=request.POST["comment"]
-            pics=picture.objects.filter(username=request.user.username, commen__contains=commen)
-            loca=[]
-            loca2=[]
-            for i in pics:
-                if i.place not in loca2:
-                    loca2.append(i.place)
-                    loca.append({"pic":i.name, "place":i.place})
-            return render_to_response("search.html",{"locas":loca})
-        else:
-            place=request.POST["place"]
-            pics=picture.objects.filter(username=request.user.username, place__contains=place)
-            loca=[]
-            loca2=[]
-            for i in pics:
-                if i.place not in loca2:
-                    loca2.append(i.place)
-                    loca.append({"pic":i.name, "place":i.place})
-            return render_to_response("search.html",{"locas":loca})
-    else:
-        pics = picture.objects.filter(username=request.user.username)
-        loca=[]
-        loca2=[]
-        for i in pics:
-            if i.place not in loca2:
-                loca2.append(i.place)
-                loca.append({"pic":i.name, "place":i.place})
-        c=Context({"locas": loca})
-        print c
-        return render_to_response("places.html", c)
