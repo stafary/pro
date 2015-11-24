@@ -1,6 +1,66 @@
 ﻿<html>
 <head>
 <style type="text/css">
+input[type="submit"] {
+	text-decoration:none;
+        margin: 0;
+        padding: 8px 15px;
+        font-size: 20px;
+        font-weight: bold;
+        color: #333;
+        text-shadow: 0 1px 0 rgba(255,255,255,0.9);
+        white-space: nowrap;
+        background-color: #eaeaea;
+        background-image: -moz-linear-gradient(#fafafa, #eaeaea);
+        background-image: -webkit-linear-gradient(#fafafa, #eaeaea);
+        background-image: linear-gradient(#fafafa, #eaeaea);
+        background-repeat: repeat-x;
+        border-radius: 3px;
+        border: 1px solid #ddd;
+        border-bottom-color: #c5c5c5;
+        box-shadow: 0 1px 3px rgba(0,0,0,.05);
+        vertical-align: middle;
+        cursor: pointer;
+        -moz-box-sizing: border-box;
+        box-sizing: border-box;
+        -webkit-touch-callout: none;
+        -webkit-user-select: none;
+        -khtml-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+        -webkit-appearance: none;
+      }
+input[type="file"] {
+	text-decoration:none;
+	width:80%;
+        margin: 0;
+        font-size: 20px;
+        font-weight: bold;
+        color: #333;
+        text-shadow: 0 1px 0 rgba(255,255,255,0.9);
+        white-space: nowrap;
+        background-color: #eaeaea;
+        background-image: -moz-linear-gradient(#fafafa, #eaeaea);
+        background-image: -webkit-linear-gradient(#fafafa, #eaeaea);
+        background-image: linear-gradient(#fafafa, #eaeaea);
+        background-repeat: repeat-x;
+        border-radius: 3px;
+        border: 1px solid #ddd;
+        border-bottom-color: #c5c5c5;
+        box-shadow: 0 1px 3px rgba(0,0,0,.05);
+        vertical-align: middle;
+        cursor: pointer;
+        -moz-box-sizing: border-box;
+        box-sizing: border-box;
+        -webkit-touch-callout: none;
+        -webkit-user-select: none;
+        -khtml-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+        -webkit-appearance: none;
+      }
 .pictures {
 background-color:rgba(248,248,248,0.3);
 width:220px;
@@ -36,7 +96,7 @@ position: relative;
 	<img src="/static/hot.jpg" style="width:100%;height:88%;top:2px;margin-top:0px;">
 </div>
 <div style="width:300px;position:absolute;left:35%;top:37%;">
-	<a href="" style="display:block;
+	<a href="/mypic" style="display:block;
 width:100%;font-size:40px;
 font-weight:bold;
 color:rgb(144,144,144) ;
@@ -54,13 +114,9 @@ text-align:center;
 padding:4px;
 text-decoration:none;" action="" method="post" enctype="multipart/form-data">
 	{% csrf_token %}
-	{% if form.errors %}
-	<p style="color: red;">
-			无效操作：{{ form.errors|pluralize }}
-	</p>
-	{% endif %}
-	{{ form.as_table }}
-	<input style="position:relative;margin-left:-80px" type="submit" value="确认上传" /> 
+	<p style="color:rgb(255,255,255);font-size:20px;margin-top:5px;margin-bottom:5px;text-align:center">提示：按住ctrl键可选择多个图片</p>
+	<input type="file" name="images" multiple="">
+	<input type="submit" value="确认上传" /> 
 	</form> 
 	
 </div>

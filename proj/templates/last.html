@@ -75,9 +75,17 @@ margin:0 20px
   <div id="back">
    	<div >
   		<img src="/{{ pic.image }}" alt="Ballade">
-   		<a class="button" href="/large/ahead/" style="right:30%0%;bottom:60%%;">上一张</a>
-		<a class="button" href="/large/next/" style="right:30%0%;bottom:40%;">下一张</a>
-		<a class="button" href="/all_of_one/?place={{pic.place}}" style="right:27%;bottom:20%;">返   回</a>
+   		<a  style="display:block;
+width:100%;font-size:40px;
+font-weight:bold;
+color:rgb(144,144,144) ;
+background-color:rgba(248,248,248,0.3);
+text-align:center;
+padding:4px;
+text-decoration:none;" >
+	已经是最后一张！</a></br>
+		<a class="button" href="/large/ahead/" style="right:30%0%;bottom:60%%;">上一张</a>
+		<a class="button" href="/large/?id={{pic.id}}" style="right:27%;bottom:20%;">返   回</a>
 
   	</div>
   </div>

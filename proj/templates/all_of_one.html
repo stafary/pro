@@ -10,7 +10,9 @@ float:left;
 margin-left:18px;
 }
 .right{
-float:right;
+position:absolute;
+right:10px;
+top:5px;
 margin-right:15px;
 }
 #top p{
@@ -18,7 +20,7 @@ color:white;
 float:left;
 font-size:200%;
 
-margin:0px 0px 0px 190px;
+margin:0px 0px 0px 30px;
 
 }
 #top {
@@ -98,7 +100,6 @@ padding:10px 10px 5px 10px;
         width: 90px;
       }
 #pictures {
-background-color:rgba(255,255,255,0.3);
 position:absolute;
 top:70px;
 width:95%;
@@ -131,31 +132,33 @@ div.img a:hover img
 	<img src="/static/back.jpg" height="100%" width="100%"/>   
 </div> 
  <div id="top">
- <form id="search" action="" method="post">
+ <form id="search" action="" method="get">
     <div class="left">
-    <input type="text" name="place" placeholder="输入拍摄地点(市)查询相册" >
+    <input type="text" name="place2" placeholder="输入拍摄地点查询相册" >
     <input class="button" type="submit" value="搜索">
     </div>
+    <a style="float:left;font-size:20px;margin:10px;color:white;" href="/mypic/">返回查看相册</a>
     <p>搜索照片</p>
+    <a style="float:left;font-size:20px;margin:10px;color:white;" href="/home/">返回主页</a>
     <div class="right">
     <input type="text" name="commen" placeholder="输入心情或评论查询照片">
     <input class="button" type="submit" value="搜索">
     </div>
   </form>
-  </div>
   <div id="pictures">
   <h1 style="text-align:center;font-size:40px;color:white;">{{place}}的所有照片</h1>
+   
   {% for pic in pictures%}
    <div class="img">
-  <a target="_blank" href="/large?name={{pic.name}}">
-  <img src="/pic_folder/{{pic.name}}" alt="Ballade" width="160" height="160">
+  <a target="_blank" href="/large?id={{pic.id}}">
+  <img src="/{{pic.image}}" alt="Ballade" width="160" height="160">
   </a>
   <div class="desc">
    <form action="" method="post">
 	<textarea rows="3" cols="10" name="changed_comment" >{{pic.comment}}</textarea>
 	<div>
-	<input type="submit" name={{pic.name}}  value="确认修改">
-	<input type="submit" name={{pic.name}}  value="删除照片">
+	<input type="submit" name={{pic.id}}  value="确认修改">
+	<input type="submit" name={{pic.id}}  value="删除照片">
 	</div>
    </form>
    </div>
