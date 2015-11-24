@@ -45,56 +45,55 @@ def home(request):
     if not request.user.is_authenticated():
         return HttpResponseRedirect("/accounts/login/")
     if request.method == 'POST':
-             form = ImageUploadForm( request.POST, request.FILES )
-             n = request.FILES['image'].name
-             if form.is_valid():
-                  pic = form.cleaned_data['image']
-                  m = picture(image = pic,name = n,username=request.user.username)
-                  m.save()
-                  src = "pic_folder/" + n
-                  pic = Image.open(src)
-                  m.place = u"外星"
-                  if hasattr(pic, '_getexif' ):
-                      ret = {}
-                      exifinfo = pic._getexif()
-                      flag = True
-                      for tag, value in exifinfo.items():
-                          decoded = TAGS.get(tag, tag)
-                          ret[decoded] = value
+        images= request.FILES.getlist('images')
+        flag2 = True
+        for image in images:
+              n = image.name
+              m = picture(image = image,name = n,username=request.user.username)
+              m.save()
+              src = m.image
+              pic = Image.open(src)
+              m.place = u"外星"
+              if hasattr(pic, '_getexif' ):
+                  ret = {}
+                  exifinfo = pic._getexif()
+                  flag = True
+                  for tag, value in exifinfo.items():
+                      decoded = TAGS.get(tag, tag)
+                      ret[decoded] = value
+                  try:
+                      xy = ret["GPSInfo"]
+                  except:
+                      flag = False
+                      flag2 = False
+                      
+                  if(flag):
                       try:
-                          xy = ret["GPSInfo"]
+                          lt = xy[4][0][0]*1.0/xy[4][0][1]+\
+                          xy[4][1][0]*1.0/xy[4][1][1]/60+xy[4][2][0]*1.0\
+                          /xy[4][2][1]/3600
+                          ln = xy[2][0][0]*1.0/xy[2][0][1]+\
+                          xy[2][1][0]*1.0/xy[2][1][1]/60+xy[2][2][0]*1.0\
+                          /xy[2][2][1]/3600
                       except:
-                          flag = False
-                          
+                          flag =False
+                          flag2 = False
                       if(flag):
-                          try:
-                              lt = xy[4][0][0]*1.0/xy[4][0][1]+\
-                              xy[4][1][0]*1.0/xy[4][1][1]/60+xy[4][2][0]*1.0\
-                              /xy[4][2][1]/3600
-                              ln = xy[2][0][0]*1.0/xy[2][0][1]+\
-                              xy[2][1][0]*1.0/xy[2][1][1]/60+xy[2][2][0]*1.0\
-                              /xy[2][2][1]/3600
-                          except:
-                              flag =False
-                          if(flag):
-                              bm = xBaiduMap()
-                              add = bm.getAddress(ln, lt)
-                              start = False
-                              add2=""
-                              for char in add:
-                                  if(char==u"市"):
-                                      break
-                                  if(start):
-                                      add2+=char
-                                  if(char == u"省"):
-                                      start = True
-                              m.place = add2
-                      m.save()
-                  return HttpResponseRedirect("/up_success?flag=%s"%flag)    
-             return	render_to_response("home.html",{"form":form})
-    form = ImageUploadForm()
-    return	render_to_response("home.html",{"form":form})
-
+                          bm = xBaiduMap()
+                          add = bm.getAddress(ln, lt)
+                          start = False
+                          add2=""
+                          for char in add:
+                              if(char==u"市"):
+                                  break
+                              if(start):
+                                  add2+=char
+                              if(char == u"省"):
+                                  start = True
+                          m.place = add2
+                  m.save()
+        return HttpResponseRedirect("/up_success?flag=%s"%flag2)    
+    return	render_to_response("home.html")
 def up_success(request):
     if not request.user.is_authenticated():
         return HttpResponseRedirect("/accounts/login/")
@@ -127,6 +126,8 @@ def all_of_one(request):
     return render_to_response("all_of_one.html",{"pictures":pictures,"place":place})
 
 def search_comment(request):
+    if not request.user.is_authenticated():
+        return HttpResponseRedirect("/accounts/login/")
     comment = request.GET.get("comment")
     pictures = picture.objects.filter(username=request.user.username,comment__contains=comment)
     if request.method =="POST":
@@ -141,6 +142,8 @@ def search_comment(request):
             pictures = picture.objects.filter(username=request.user.username,comment__contains=comment)
     return render_to_response("search_com.html",{"pictures":pictures,"comment":comment})
 def search_place(request):
+    if not request.user.is_authenticated():
+        return HttpResponseRedirect("/accounts/login/")
     place=request.GET.get("place")
     pics=picture.objects.filter(username=request.user.username, place__contains=place)            
     loca=[]
@@ -220,12 +223,16 @@ class xBaiduMap:
             print "Decoding Failed"
             return None
 def large(request):
+    if not request.user.is_authenticated():
+        return HttpResponseRedirect("/accounts/login/")
     pic_id = request.GET.get("id")
     request.session['id'] = pic_id
     pic = picture.objects.get(id = pic_id)
     return render_to_response("large.html",{"pic":pic})
     
 def next_pic(request):
+    if not request.user.is_authenticated():
+        return HttpResponseRedirect("/accounts/login/")
     pic_id = request.session['id']
     pic = picture.objects.get(id = pic_id)
     pic_place = pic.place
@@ -252,6 +259,8 @@ def next_pic(request):
     return render_to_response("large.html",{"pic":pic})
     
 def ahead_pic(request):
+    if not request.user.is_authenticated():
+        return HttpResponseRedirect("/accounts/login/")
     pic_id = request.session['id']
     pic = picture.objects.get(id = pic_id)
     pic_place = pic.place
