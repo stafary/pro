@@ -84,4 +84,6 @@ USE_TZ = True
 
 STATIC_URL = './static/'
 STATIC_URL2 = './pic_folder/'
+STATIC_URL3 = './new/'
+
 LANGUAGE_CODE = 'zh-cn'

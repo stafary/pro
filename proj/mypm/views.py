@@ -219,3 +219,85 @@ class xBaiduMap:
         else:
             print "Decoding Failed"
             return None
+def large(request):
+    pic_id = request.GET.get("id")
+    request.session['id'] = pic_id
+    pic = picture.objects.get(id = pic_id)
+    return render_to_response("large.html",{"pic":pic})
+    
+def next_pic(request):
+    pic_id = request.session['id']
+    pic = picture.objects.get(id = pic_id)
+    pic_place = pic.place
+    user_name = pic.username
+    album_usr = picture.objects.filter(username = user_name)
+    album = album_usr.filter(place = pic_place)
+    for i in range(0,len(album)):
+        if int(album[i].id) == int(pic_id):
+            request.session['counter'] = i
+            break;
+    counter = request.session['counter']
+    if counter != len(album)-1 :    
+        try:
+            request.session['id'] = album[counter+1].id        
+            request.session['counter'] = i+1
+            request.session['id'] = album[counter+1].id
+            pic_id = album[counter+1].id
+            pic = picture.objects.get(id = pic_id)
+            return render_to_response("large.html",{"pic":pic})
+        except IndexError:
+            return render_to_response("last.html",{"pic":pic})
+    else:
+        return render_to_response("last.html",{"pic":pic})
+    return render_to_response("large.html",{"pic":pic})
+    
+def ahead_pic(request):
+    pic_id = request.session['id']
+    pic = picture.objects.get(id = pic_id)
+    pic_place = pic.place
+    user_name = pic.username
+    album_usr = picture.objects.filter(username = user_name) 
+    album = album_usr.filter(place = pic_place)
+    for i in range(0,len(album)):
+        if int(album[i].id) == int(pic_id):
+            request.session['counter'] = i
+            break;
+    counter = request.session['counter']
+    if counter != 0 :    
+        try:
+            request.session['id'] = album[counter-1].id        
+            request.session['counter'] = i-1
+            request.session['id'] = album[counter-1].id
+            pic_id = album[counter-1].id
+            pic = picture.objects.get(id = pic_id)
+            return render_to_response("large.html",{"pic":pic})
+        except IndexError:
+            return render_to_response("first.html",{"pic":pic})
+    else:
+        return render_to_response("first.html",{"pic":pic})
+    return render_to_response("large.html",{"pic":pic})
+
+#def edit_pic(request):
+#    #    picname = request.GET.get["name"]
+#    picname = "111.jpg"
+##    pic = picture.objects.filter(name = picname)
+#    src = "/pic_folder/" + picname
+##    pic = Image.open(src)
+##    pic.rotate(45).save()
+#    return render_to_response("edit_pic.html",{"mypicture":src})
+#def edit_pic_rotate(request):
+#    global pic_n
+#        #    picname = request.GET.get["name"]
+#    picname = "111.jpg"
+#    src = "pic_folder/" + picname
+#    new_picname = str(pic_n) + picname
+#    if (pic_n ==1):
+#        pic = Image.open(src)
+#    else:
+#        pic = Image.open(("new/"+new_picname))
+#    pic_n=pic_n+1
+#    new_picname = str(pic_n) + picname
+##    pic = picture.objects.filter(name = picname)
+#    src = "pic_folder/" + picname
+#    pic.transpose(Image.ROTATE_180).save(("new/"+new_picname),"JPEG")
+#    return render_to_response("edit_pic.html",{"mypicture":("/new/"+new_picname)})
