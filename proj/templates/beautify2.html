@@ -1,0 +1,131 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+<head>
+	<title>照片美化</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta name="language" content="en" />
+	<style type="text/css">
+.button  {
+	text-decoration:none;
+        position:absolute;
+        margin: 0;
+        padding: 8px 15px;
+        font-size: 20px;
+        font-weight: bold;
+        color: #333;
+        text-shadow: 0 1px 0 rgba(255,255,255,0.9);
+        white-space: nowrap;
+        background-color: #eaeaea;
+        background-image: -moz-linear-gradient(#fafafa, #eaeaea);
+        background-image: -webkit-linear-gradient(#fafafa, #eaeaea);
+        background-image: linear-gradient(#fafafa, #eaeaea);
+        background-repeat: repeat-x;
+        border-radius: 3px;
+        border: 1px solid #ddd;
+        border-bottom-color: #c5c5c5;
+        box-shadow: 0 1px 3px rgba(0,0,0,.05);
+        vertical-align: middle;
+        cursor: pointer;
+        -moz-box-sizing: border-box;
+        box-sizing: border-box;
+        -webkit-touch-callout: none;
+        -webkit-user-select: none;
+        -khtml-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+        -webkit-appearance: none;
+      }
+      .button:hover,
+      .button:active {
+        background-position: 0 -15px;
+        border-color: #ccc #ccc #b5b5b5;
+      }
+      .button:active {
+        background-color: #dadada;
+        border-color: #b5b5b5;
+        background-image: none;
+        box-shadow: inset 0 3px 5px rgba(0,0,0,.15);
+      }
+      .button:focus {
+        outline: none;
+        border-color: #51a7e8;
+        box-shadow: inset 0 1px 2px rgba(0,0,0,.075), 0 0 5px rgba(81,167,232,.5);
+      }
+#back {
+background-color:rgba(255,255,255,0.3);
+position:absolute;
+top:10px;
+width:95%;
+height:95%;
+margin:0 20px
+}
+#back img
+  {
+  position:relative;
+  top:50px;
+  margin-left:80px;
+  border:1px solid white;
+  width:60%;
+  height:80%;
+  }
+	</style>
+<script src="http://open.web.meitu.com/sources/xiuxiu.js" type="text/javascript"></script>
+<script type="text/javascript">
+window.onload=function(){
+  /*第1个参数是加载编辑器div容器，第2个参数是编辑器类型，第3个参数是div容器宽，第4个参数是div容器高*/
+  xiuxiu.embedSWF("altContent",1,"100%","100%");
+  //修改为您自己的图片上传接口
+//  xiuxiu.setUploadURL("http://photomanage.sinaapp.com/jsp_upload_streaming.jsp/");
+  xiuxiu.setUploadType(2);
+  xiuxiu.setUploadURL("http://photomanage.sinaapp.com/xiuxiu_upload/?username2={{pic.username}}&picid2={{pic.id}}&place={{pic.place}}");
+  xiuxiu.setUploadDataFieldName("images");
+//  xiuxiu.onBeforeUpload = function(data, id){
+//		xiuxiu.setUploadArgs({filetype: data.type, type: "image", filename: data.name });
+//	}
+  xiuxiu.onInit = function ()
+  {
+    xiuxiu.loadPhoto("{{pic.src}}");//修改为要处理的图片url
+  }
+  xiuxiu.onUploadResponse = function (data)
+  {
+    alert("保存成功！");
+	window.location.href="/large2/";
+  }
+//	xiuxiu.onDebug = function (data)
+//	{
+ //       alert("错误响应" + data);
+//	}
+	
+	xiuxiu.onClose = function (id)
+	{
+        window.location.href="/large/?id={{pic.id}}";
+	}
+}
+</script>
+	</script>
+	
+
+	<style type="text/css">
+		html, body { height:100%;}
+		body { margin:0;left:30%; }
+		.layerWrap{position: absolute; left: 0%; top: 0; width: 700px; height: 500px; display: none;}
+		.layerWrap img{ position: absolute; width: 300px; cursor: pointer;}
+		.layerWrap span{position: absolute; top: 50%; cursor: pointer; margin-top: -50px; width: 100px; height: 100px; background: #ccc; color: #666; text-align: center; line-height: 100px;}
+		.img1{ left: 30%; top: 95px;}
+		.span1{ left: 50%;}
+		.layer{ position: absolute; width: 700px; height: 500px; background: #000; opacity: 0.8; filter:alpha(opacity=80);}
+	</style>
+</head>
+<body>
+
+	
+	<div id="flashEditorOut" style="width:100%; height:100%;">
+        <div id="altContent" style="width:100%; height:100%;">
+            <h1>照片美化</h1>
+        </div>
+	</div>
+
+</body>
+</html>
