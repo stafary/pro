@@ -1,14 +1,20 @@
 ﻿<html>
 <head>
 <title>Places</title>
+<link rel="stylesheet" type="text/css" href="/static/css/page.css" />
+<link rel="stylesheet" type="text/css" href="/static/buttons/buttons.css" />
 <style type="text/css">
 .left {
-float:left;
-margin-left:18px;
+position:absolute;
+left: 20px;
+top: 10px;
+width:250px;
 }
 .right{
-float:right;
-margin-right:15px;
+position:absolute;
+right: 70px;
+top: 10px;
+width:250px;
 }
 #top p{
 color:white;
@@ -28,7 +34,7 @@ height:40px;
 background-color:rgba(255,255,255,0.3);
 padding:10px 10px 5px 10px;
 }
-.button {
+<!-- .button {
         position: relative;
         display: inline-block;
         margin: 0;
@@ -94,19 +100,20 @@ padding:10px 10px 5px 10px;
       #search .button {
         padding: 10px;
         width: 90px;
-      }
+      } -->
 #pictures {
 position:absolute;
-top:70px;
-width:95%;
+top:130px;
+width:100%;
 height:100%;
-margin:0 20px
+margin-left:20px;
+margin-right:20px;
 }
 div.img
   {
   margin:20px;
   border:1px solid white;
-  height:250px;
+  height:auto;
   width:auto;
   float:left;
   text-align:center;
@@ -121,44 +128,39 @@ div.img a:hover img
   {
   border:1px solid #333333;
   }
-div.desc
-  {
-  text-align:center;
-  font-weight:normal;
-  width:150px;
-  font-size:30px;
-  margin:15px 5px 10px 5px;
-  }
 
 </style>
 </head>
 <body>
-<div id="Layer1" style="position:fixed; width:100%; height:100%; z-index:-1;left:0px;top:0px;">    
-	<img src="/static/back.jpg" height="100%" width="100%"/>   
+<div id="Layer1" style="position:fixed; width:100%; height:100%;left:0px;top:0px;">    
+	<img src="/static/haidi.jpg" height="100%" width="100%"/>   
 </div> 
  <div id="top">
  <form id="search" action="" method="post">
     <div class="left">
     <input type="text" name="place" placeholder="输入拍摄地点查询相册" >
-    <input class="button" type="submit"  value="搜索">
+    <input  style="position:relative;left:230px;top:-35px;" type="submit"  value="搜索" class="button small blue">
     </div>
-    <a style="float:left;font-size:20px;margin:10px;color:white;" href="/home/">返回主页</a>
+    
     <p>搜索照片</p>
     <div class="right">
     <input type="text" name="commen" placeholder="输入心情或评论查询照片">
-    <input class="button" type="submit"  value="搜索">
+    <input  style="position:relative;left:230px;top:-35px;" type="submit"  value="搜索" class="button small blue">
     </div>
+	<a style="position:absolute;font-size:16px;left:640px;top:6px;color:white;text-align:center;" href="/home/" class="button big blue">返回主页</a>
   </form>
   </div>
-
+  <h1 style="position:relative;top:28px;left:65%;text-align:center;font-size:40px;color:white;">所有地点的相册</h1>
   <div id="pictures">
-  <h1 style="text-align:center;font-size:40px;color:white;">所有地点的相册</h1>
       {%  for loca in locas %}
    <div class="img">
    <a href="/all_of_one/?place={{loca.place}}">
-  <img src="/pic_folder/{{loca.pic}}" width="160" height="160">
+  <img src="{{loca.pic}}" width="160" height="160" >
   </a>
-  <div class="desc">{{ loca.place }}</div>
+  <div class="desc">
+  <form action="" id="myform" method="post">
+	<textarea rows="1" cols="10" readonly="true" style="text-align:center;color:white;position:relative;width:100%;bottom:20%;background-color:rgba(255,255,255,0.1);font-size:25px;">{{loca.place}}</textarea>
+  </div>
    </div>
     {% endfor %}
 

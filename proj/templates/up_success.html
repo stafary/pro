@@ -1,5 +1,7 @@
 ﻿<html>
 <head>
+<link rel="stylesheet" type="text/css" href="/static/css/page.css" />
+<link rel="stylesheet" type="text/css" href="/static/buttons/buttons.css" />
 <style type="text/css">
 input[type="submit"]，input[type="file"]{
 	background:  3366CC  url(overlay.png) repeat-x;
@@ -21,17 +23,17 @@ input[type="submit"]，input[type="file"]{
 </head>
 <body>
 <div id="Layer1" style="position:absolute; width:100%; height:100%; z-index:-1;left:0px;top:0px;">    
-	<img src="/static/back.jpg" height="100%" width="100%"/>   
+	<img src="/static/background.jpg" height="100%" width="100%"/>   
 </div> 
 <div style="margin:auto;position:relative;top:40%;left:auto;background-color:rgba(255,255,255,0.3);padding:20px;">
 	<div style="position:relative;left:40%">
 	{% if flag %}
 		<p style="color:orange;font-weight:900;">上传成功！</p>
 	{% else %}
-		<p style="color:orange;font-weight:900;">上传成功(存在无法获取地理位置信息的照片)！</p>
+		<p style="color:red;font-weight:900;">上传成功(存在无法获取地理位置信息的照片)！</p>
 	{% endif %}
-	<a href="/home">返回主页</a>
-	<a href="/mypic">查看我的相册</a>
+	<a href="/home" class="button blue medium">返回主页</a>
+	<a href="/mypic" class="button blue medium">查看我的相册</a>
 	</div>
 </div>
 </body>

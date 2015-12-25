@@ -11,6 +11,11 @@ import json
 from PIL import Image
 from PIL.ExifTags import TAGS
 from django.template import Context
+from StringIO import StringIO
+import sae
+import copy
+from sae.ext.storage import monkey
+
 def login(request):
     if request.method == "POST":
         if request.POST.get("log"):
@@ -41,6 +46,26 @@ def register(request):
     else:
         form = UserCreationForm()
     return render_to_response("reg.html", {'form': form,})
+def xiuxiu_upload(request):
+    if request.method == 'POST':
+        images= request.FILES.getlist('images')
+        image = images[0]
+        place = request.GET["place"]
+        username = request.GET["username2"]
+        pic_id = request.GET["picid2"]
+        m = picture(image = image,name = image.name,username=username,place=place)
+#        m = picture(image=image, username="4",place=u"成都")
+        m.save()
+        request.session["id_after_beautify"] = m.id
+        m.src = "http://photomanage-picfolder2.stor.sinaapp.com/pic_folder%2F"+str(m.image)[11:]
+        m.save()
+        pic_del = picture.objects.get(id =pic_id)
+        pic_del.image.delete()
+        pic_del.delete()
+       
+        return HttpResponse("success")
+    else:
+        return render_to_response("xiuxiu_Upload.html")
 def home(request):
     if not request.user.is_authenticated():
         return HttpResponseRedirect("/accounts/login/")
@@ -48,51 +73,63 @@ def home(request):
         images= request.FILES.getlist('images')
         flag2 = True
         for image in images:
-              n = image.name
-              m = picture(image = image,name = n,username=request.user.username)
-              m.save()
-              src = m.image
-              pic = Image.open(src)
-              m.place = u"外星"
-              if hasattr(pic, '_getexif' ):
-                  ret = {}
-                  exifinfo = pic._getexif()
-                  flag = True
-                  for tag, value in exifinfo.items():
-                      decoded = TAGS.get(tag, tag)
-                      ret[decoded] = value
-                  try:
-                      xy = ret["GPSInfo"]
-                  except:
-                      flag = False
-                      flag2 = False
-                      
-                  if(flag):
-                      try:
-                          lt = xy[4][0][0]*1.0/xy[4][0][1]+\
-                          xy[4][1][0]*1.0/xy[4][1][1]/60+xy[4][2][0]*1.0\
-                          /xy[4][2][1]/3600
-                          ln = xy[2][0][0]*1.0/xy[2][0][1]+\
-                          xy[2][1][0]*1.0/xy[2][1][1]/60+xy[2][2][0]*1.0\
-                          /xy[2][2][1]/3600
-                      except:
-                          flag =False
-                          flag2 = False
-                      if(flag):
-                          bm = xBaiduMap()
-                          add = bm.getAddress(ln, lt)
-                          start = False
-                          add2=""
-                          for char in add:
-                              if(char==u"市"):
-                                  break
-                              if(start):
-                                  add2+=char
-                              if(char == u"省"):
-                                  start = True
-                          m.place = add2
-                  m.save()
-        return HttpResponseRedirect("/up_success?flag=%s"%flag2)    
+            n = image.name
+            m = picture(image = image,name = n,username=request.user.username)
+            m.save()
+            m.src = "http://photomanage-picfolder2.stor.sinaapp.com/pic_folder%2F"+str(m.image)[11:]
+            m.save()
+            c = sae.storage.Connection()
+            bucket = c.get_bucket('picfolder2')
+            path = unicode(str(m.image),"utf-8")
+            srcx = bucket.get_object_contents(path)
+            pic = Image.open(StringIO(srcx))
+            m.place = u"外星"
+            try:
+                if hasattr(pic, '_getexif' ):
+                    ret = {}
+                    exifinfo = pic._getexif()
+                    flag = True
+                    for tag, value in exifinfo.items():
+                        decoded = TAGS.get(tag, tag)
+                        ret[decoded] = value
+                    try:
+                        xy = ret["GPSInfo"]
+                    except:
+                        flag = False
+                        flag2 = False
+                          
+                    if(flag):
+                        try:
+                            lt = xy[4][0][0]*1.0/xy[4][0][1]+\
+                            xy[4][1][0]*1.0/xy[4][1][1]/60+xy[4][2][0]*1.0\
+                            /xy[4][2][1]/3600
+                            ln = xy[2][0][0]*1.0/xy[2][0][1]+\
+                            xy[2][1][0]*1.0/xy[2][1][1]/60+xy[2][2][0]*1.0\
+                            /xy[2][2][1]/3600
+                        except:
+                            flag =False
+                            flag2 = False
+                        if(flag):
+                            bm = xBaiduMap()
+                            add = bm.getAddress(ln, lt)
+                            start = False
+                            add2=""
+                            for char in add:
+                                if(char==u"市" or char==u"县"):
+                                    break
+                                if(start):
+                                    add2+=char
+                                if(char == u"省" or char == u"区"):
+                                    start = True
+                            if(add2):
+                                m.place = add2                             
+                    m.save()
+                else:
+                    m.save()
+            except:
+                flag2 = False
+                m.save()
+        return render_to_response("home.html",{"up":True,"flag":flag2})    
     return	render_to_response("home.html")
 def up_success(request):
     if not request.user.is_authenticated():
@@ -106,9 +143,9 @@ def up_success(request):
 def all_of_one(request):
     if not request.user.is_authenticated():
         return HttpResponseRedirect("/accounts/login/")
-    if(request.GET.has_key("place2")):
+    if(request.GET.has_key("place2") and request.GET["place2"]!=""):
         return HttpResponseRedirect("/search_place/?place=%s"%request.GET.get("place2"))
-    if(request.GET.has_key("comment")):
+    if(request.GET.has_key("comment") and request.GET["comment"]!=""):
         return HttpResponseRedirect("/search_com/?comment=%s"%request.GET.get("comment"))
     place = request.GET.get("place")
     pictures = picture.objects.filter(place=place,username=request.user.username)
@@ -120,7 +157,7 @@ def all_of_one(request):
                         pic.save()
                     else:
                         pic.image.delete()
-                        picture.objects.get(id= pic.id).delete()
+                        pic.delete()
             pictures = picture.objects.filter(place=place,username=request.user.username)
 
     return render_to_response("all_of_one.html",{"pictures":pictures,"place":place})
@@ -151,7 +188,7 @@ def search_place(request):
     for i in pics:
         if i.place not in loca2:
             loca2.append(i.place)
-            loca.append({"pic":i.name, "place":i.place})
+            loca.append({"pic":i.src, "place":i.place})
     return render_to_response("search_place.html",{"locas":loca,"place":place})
 def show_pic(request):
     if not request.user.is_authenticated():
@@ -171,9 +208,8 @@ def show_pic(request):
         for i in pics:
             if i.place not in loca2:
                 loca2.append(i.place)
-                loca.append({"pic":i.name, "place":i.place})
+                loca.append({"pic":i.src, "place":i.place})
         c=Context({"locas": loca})
-        print c
         return render_to_response("places.html", c)
 
 #给出经纬度，调用百度地图获得照片的拍摄城市
@@ -222,17 +258,26 @@ class xBaiduMap:
         else:
             print "Decoding Failed"
             return None
+
 def large(request):
     if not request.user.is_authenticated():
         return HttpResponseRedirect("/accounts/login/")
     pic_id = request.GET.get("id")
     request.session['id'] = pic_id
     pic = picture.objects.get(id = pic_id)
+    if request.method =="POST":
+        pic.comment = request.POST["changed_comment"]
+        pic.save()
+#    return HttpResponse("%s"%pic.src)
     return render_to_response("large.html",{"pic":pic})
     
+def large_after_beautify(request):
+    pic_id = request.session["id_after_beautify"]
+    request.session['id'] = pic_id
+    pic = picture.objects.get(id = pic_id)
+#    return HttpResponse("%s"%pic.src)
+    return render_to_response("large.html",{"pic":pic})    
 def next_pic(request):
-    if not request.user.is_authenticated():
-        return HttpResponseRedirect("/accounts/login/")
     pic_id = request.session['id']
     pic = picture.objects.get(id = pic_id)
     pic_place = pic.place
@@ -244,23 +289,20 @@ def next_pic(request):
             request.session['counter'] = i
             break;
     counter = request.session['counter']
-    if counter != len(album)-1 :    
+    if counter != len(album) + 1:
         try:
             request.session['id'] = album[counter+1].id        
             request.session['counter'] = i+1
             request.session['id'] = album[counter+1].id
             pic_id = album[counter+1].id
             pic = picture.objects.get(id = pic_id)
-            return render_to_response("large.html",{"pic":pic})
+            return render_to_response("large.html",{"pic":pic})        
         except IndexError:
-            return render_to_response("last.html",{"pic":pic})
+            return render_to_response("last.html",{"pic":pic})        
     else:
-        return render_to_response("last.html",{"pic":pic})
-    return render_to_response("large.html",{"pic":pic})
-    
+        return render_to_response("last.html",{"pic":pic})        
+    return render_to_response("last.html",{"pic":pic})        
 def ahead_pic(request):
-    if not request.user.is_authenticated():
-        return HttpResponseRedirect("/accounts/login/")
     pic_id = request.session['id']
     pic = picture.objects.get(id = pic_id)
     pic_place = pic.place
@@ -272,41 +314,27 @@ def ahead_pic(request):
             request.session['counter'] = i
             break;
     counter = request.session['counter']
-    if counter != 0 :    
+    if counter != 0:
         try:
             request.session['id'] = album[counter-1].id        
             request.session['counter'] = i-1
             request.session['id'] = album[counter-1].id
             pic_id = album[counter-1].id
             pic = picture.objects.get(id = pic_id)
-            return render_to_response("large.html",{"pic":pic})
+            return render_to_response("large.html",{"pic":pic})        
         except IndexError:
-            return render_to_response("first.html",{"pic":pic})
+            return render_to_response("first.html",{"pic":pic})        
     else:
-        return render_to_response("first.html",{"pic":pic})
-    return render_to_response("large.html",{"pic":pic})
+        return render_to_response("first.html",{"pic":pic})        
+    return render_to_response("first.html",{"pic":pic})        
 
-#def edit_pic(request):
-#    #    picname = request.GET.get["name"]
-#    picname = "111.jpg"
-##    pic = picture.objects.filter(name = picname)
-#    src = "/pic_folder/" + picname
-##    pic = Image.open(src)
-##    pic.rotate(45).save()
-#    return render_to_response("edit_pic.html",{"mypicture":src})
-#def edit_pic_rotate(request):
-#    global pic_n
-#        #    picname = request.GET.get["name"]
-#    picname = "111.jpg"
-#    src = "pic_folder/" + picname
-#    new_picname = str(pic_n) + picname
-#    if (pic_n ==1):
-#        pic = Image.open(src)
-#    else:
-#        pic = Image.open(("new/"+new_picname))
-#    pic_n=pic_n+1
-#    new_picname = str(pic_n) + picname
-##    pic = picture.objects.filter(name = picname)
-#    src = "pic_folder/" + picname
-#    pic.transpose(Image.ROTATE_180).save(("new/"+new_picname),"JPEG")
-#    return render_to_response("edit_pic.html",{"mypicture":("/new/"+new_picname)})
+def beautify(request):
+    pic_id = request.GET.get("id")
+    request.session['id'] = pic_id
+    pic = picture.objects.get(id = pic_id)
+#    return HttpResponse("%s"%pic.src)
+    return render_to_response("beautify2.html",{"pic":pic})
+def cross(request):
+    return render_to_response('crossdomain.xml',content_type='text/xml')
+def jsp(request):
+    return render_to_response('xx.html')

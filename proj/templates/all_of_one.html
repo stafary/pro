@@ -1,20 +1,49 @@
 ﻿<html>
 <head>
 <title>All pictures in one place</title>
+<link rel="stylesheet" type="text/css" href="/static/css/page.css" />
+<link rel="stylesheet" type="text/css" href="/static/buttons/buttons.css" />
 <style type="text/css">
+
+.middle
+{
+position:absolute:
+top:25px;
+margin-left: auto;
+margin-right: auto;
+text-align:center;
+}
 textarea{
 float:left;
 }
 .left {
-float:left;
-margin-left:18px;
+position:absolute;
+left: 20px;
+top: 10px;
+width:250px;
 }
 .right{
 position:absolute;
-right:10px;
-top:5px;
-margin-right:15px;
+right: 70px;
+top: 10px;
+width:250px;
 }
+
+.img{
+	display : inline-block;
+	position : relative;
+}
+
+.img .delete{
+	position : absolute;
+	top : 0px;
+	right : 0px;
+	width : 20px;
+	height : 20px;
+	display:none;
+
+}
+
 #top p{
 color:white;
 float:left;
@@ -101,10 +130,11 @@ padding:10px 10px 5px 10px;
       }
 #pictures {
 position:absolute;
-top:70px;
-width:95%;
+top:130px;
+width:100%;
 height:100%;
-margin:0 20px
+margin-left:20px;
+margin-right:20px;
 }
 div.img
   {
@@ -125,40 +155,74 @@ div.img a:hover img
   {
   border:1px solid #333333;
   }
+
+
 </style>
+<script src="http://code.jquery.com/jquery-1.4.1.min.js"></script>
+<script type="text/javascript">
+    $(document).ready(init);
+    function init()
+    {
+        $(".img").mouseenter(function () {
+            $(this).find(".delete").show();
+
+        });
+   
+            
+        $(".img").mouseleave(function () {
+            $(this).find(".delete").hide();
+        });
+         
+    }
+      
+    
+</script>
+<script language="javascript">
+        function sub()
+        {
+                document.form.submit();
+        }        
+</script>
 </head>
 <body>
-<div id="Layer1" style="position:fixed; width:100%; height:100%; z-index:-1;left:0px;top:0px;">    
-	<img src="/static/back.jpg" height="100%" width="100%"/>   
+<div id="Layer1" style="position:fixed; width:100%; height:100%;;left:0px;top:0px;">    
+	<img src="/static/haidi.jpg" height="100%" width="100%"/>   
 </div> 
  <div id="top">
  <form id="search" action="" method="get">
     <div class="left">
     <input type="text" name="place2" placeholder="输入拍摄地点查询相册" >
-    <input class="button" type="submit" value="搜索">
+    <input class="button small blue"  style="position:relative;left:230px;top:-35px;" type="submit" value="搜索">
     </div>
-    <a style="float:left;font-size:20px;margin:10px;color:white;" href="/mypic/">返回查看相册</a>
-    <p>搜索照片</p>
-    <a style="float:left;font-size:20px;margin:10px;color:white;" href="/home/">返回主页</a>
+	<div class="middle">
+    <a style="font-size:16px;color:white;text-align:center;" href="/mypic/" class="button big blue">返回相册</a>
+    <a style="font-size:16px;color:white;text-align:center;" href="/home/" class="button big blue">返回主页</a>
+	</div>
     <div class="right">
-    <input type="text" name="commen" placeholder="输入心情或评论查询照片">
-    <input class="button" type="submit" value="搜索">
+    <input type="text" name="comment" placeholder="输入心情或评论查询照片">
+    <input class="button small blue"   style="position:relative;left:230px;top:-35px;" type="submit" value="搜索">
     </div>
+	 <a style="display:block;text-align:center;font-size:40px;color:white;">{{place}}的所有照片</a>
   </form>
   <div id="pictures">
-  <h1 style="text-align:center;font-size:40px;color:white;">{{place}}的所有照片</h1>
-   
+  <a style="position:absolute;left:45%;top:-20px;font-size:15px;color:white;"> (点击照片看大图)</a>
   {% for pic in pictures%}
    <div class="img">
-  <a target="_blank" href="/large?id={{pic.id}}">
-  <img src="/{{pic.image}}" alt="Ballade" width="160" height="160">
+  <a  href="/large?id={{pic.id}}">
+  <img src="{{pic.src}}" alt="Ballade" width="160" height="160">
   </a>
+  <a href="#">
+	<!-- <img src="http://tdgj.mlr.gov.cn/images/%E5%8F%89%E5%8F%89.jpg" class="delete"/> -->
+	<form action="" id="myform" method="post">
+	<input type="image" src="/static/xx.png" name={{pic.id}} value="删除照片"  onclick="sub()" class="delete">
+	</form>
+    </a>
+  
   <div class="desc">
-   <form action="" method="post">
-	<textarea rows="3" cols="10" name="changed_comment" >{{pic.comment}}</textarea>
+   <form action="" id="myform" method="post">
+	<textarea rows="3" cols="10" name="changed_comment"  placeholder="暂无心情或评论"  readonly="true" color="rgb(255,255,255)" style="color:rgb(255,255,255);position:relative;width:100%;bottom:20%;background-color:rgba(255,255,255,0.1)">{{pic.comment}}</textarea>
 	<div>
-	<input type="submit" name={{pic.id}}  value="确认修改">
-	<input type="submit" name={{pic.id}}  value="删除照片">
+	
 	</div>
    </form>
    </div>

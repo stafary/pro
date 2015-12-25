@@ -1,6 +1,6 @@
 from django.conf.urls import patterns, include, url
 from django.contrib import admin
-from mypm.views import login,empty,register,home,up_success,all_of_one,show_pic,search_comment,large,next_pic,ahead_pic,search_place
+from mypm.views import xiuxiu_upload,jsp,cross,login,empty,register,home,up_success,all_of_one,show_pic,search_comment,large,next_pic,ahead_pic,search_place,beautify,large_after_beautify
 import settings
 urlpatterns = patterns('',
     # Examples:
@@ -22,10 +22,13 @@ urlpatterns = patterns('',
     url(r'^search_com/$',search_comment),
     url(r'^search_place/$',search_place),    
     url(r'^large/$',large),
-#    url(r'edit_pic/$',edit_pic),
-#    url(r'edit_pic_rotate/$',edit_pic_rotate),
-#    url( r'^new/(?P<path>.*)$', 'django.views.static.serve',
-#        { 'document_root':settings.STATIC_URL3 }),
     url(r'^large/next/$',next_pic),
     url(r'^large/ahead/$',ahead_pic),
+    url(r'^beautify/$',beautify),
+    url(r'^crossdomain.xml',cross),  
+    url(r'^meitu_joint/', 'http://photomanage-picfolder.stor.sinaapp.com/pic_folder/'),
+    url(r'^jsp_upload_streaming.jsp', jsp),
+    url(r'^home/crossdomain.xml',cross), 
+    url(r'^xiuxiu_upload/$',xiuxiu_upload), 
+    url(r'^large2/$',large_after_beautify),
 )

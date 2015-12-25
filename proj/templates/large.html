@@ -1,7 +1,61 @@
-﻿<html>
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <title>Large</title>
+<link rel="stylesheet" type="text/css" href="/static/css/page.css" />
+<link rel="stylesheet" type="text/css" href="/static/buttons/buttons.css" />
+<script type="text/javascript">
+function AutoResizeImage(maxWidth,maxHeight,objImg){
+var img = new Image();
+img.src = objImg.src;
+var hRatio;
+var wRatio;
+var Ratio = 1;
+var w = img.width;
+var h = img.height;
+wRatio = maxWidth / w;
+hRatio = maxHeight / h;
+if (maxWidth ==0 && maxHeight==0){
+Ratio = 1;
+}else if (maxWidth==0){//
+if (hRatio<1) Ratio = hRatio;
+}else if (maxHeight==0){
+if (wRatio<1) Ratio = wRatio;
+}else if (wRatio<1 || hRatio<1){
+Ratio = (wRatio<=hRatio?wRatio:hRatio);
+}
+if (Ratio<1){
+w = w * Ratio;
+h = h * Ratio;
+}
+objImg.height = h;
+objImg.width = w;
+}
+</script>
+
+</head>
+
+<body>
+
+</body>
 <style type="text/css">
+:-moz-placeholder { /* Mozilla Firefox 4 to 18 */
+    color: black;  
+}
+
+::-moz-placeholder { /* Mozilla Firefox 19+ */
+    color: black;  
+}
+
+input:-ms-input-placeholder,
+textarea:-ms-input-placeholder {
+    color: black;  
+}
+
+input::-webkit-input-placeholder,
+textarea::-webkit-input-placeholder {
+    color: black;  
+}
 
 .button  {
 	text-decoration:none;
@@ -53,33 +107,57 @@
 #back {
 background-color:rgba(255,255,255,0.3);
 position:absolute;
-top:10px;
-width:95%;
-height:95%;
-margin:0 20px
+top:0px;
+left:30px;
+width:94%;
+
+height:100%;
+
 }
 #back img
   {
-  float:left;
+  position:relative;
+  top:2px;
+  text-align:center;
   margin-left:80px;
-  border:1px solid white;
-  width:60%;
-  height:80%;
   }
+#comment
+{
+	position:relative;
+	top:1px;
+	margin-left:80px;
+  width:750px;
+  height:11%;
+}
 </style>
+<script language="javascript" type="text/javascript"> 
+function upload()
+{
+	document.getElementById('myform').submit();
+}
+</script>
 </head>
 <body>
-<div id="Layer1" style="position:fixed; width:100%; height:100%; z-index:-1;left:0px;top:0px;">    
-	<img src="/static/back.jpg" height="100%" width="100%"/>   
+<div id="Layer1" style="position:fixed; width:100%; height:100%;left:0px;top:0px;">    
+	<img src="/static/large.jpg" height="100%" width="100%"/>   
 </div> 
-  <div id="back">
-   	<div >
-  		<img src="/{{ pic.image }}" alt="Ballade">
-   		<a class="button" href="/large/ahead/" style="right:30%0%;bottom:60%%;">上一张</a>
-		<a class="button" href="/large/next/" style="right:30%0%;bottom:40%;">下一张</a>
-		<a class="button" href="/all_of_one/?place={{pic.place}}" style="right:27%;bottom:20%;">返   回</a>
 
-  	</div>
-  </div>
+  <div>
+   	<div id="back" >
+   		<a class="button blue medium" href="/large/ahead/" style="right:0.9%;bottom:70%;" >上一张</a>
+		<a class="button blue medium" href="/large/next/"  style="right:0.9%;bottom:50%;" >下一张</a>
+		<a class="button blue medium" href="/beautify/?id={{pic.id}}" style="right:0%;bottom:30%;">美化照片</a>
+		<a class="button blue medium" href="/all_of_one/?place={{pic.place}}" style="right:1.8%;bottom:10%;">返   回</a>
+		<div id="pic_com">
+  		<img src="{{pic.src}}" border="0" width="0" height="0" onload="AutoResizeImage(750,560,this)" style="position:relative;left:15%;" alt="200 X 300"/></a>
+		<form action="/large/?id={{pic.id}}" id="myform" method="post">
+		<textarea id="comment" rows="3" cols="10" name="changed_comment"  placeholder="添加评论或心情" style="position:relative;left:15%;background-color:rgba(255,255,255,0.1)" 
+		 onblur="upload()">{{pic.comment}}</textarea>
+		</div>
+		</form>
+	</div>
+
+</div>
+
 </body>
 </html>
